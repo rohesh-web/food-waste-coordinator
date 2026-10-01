@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>Available food</h4>
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-4"><input name="area" value="{{ area }}" class="form-control" placeholder="Filter by area"></div>
+  <div class="col-auto"><button class="btn btn-outline-success">Filter</button></div>
+</form>
+<div class="row g-3 mb-4">
+  {% for l in available %}
+  <div class="col-md-4">
+    <div class="card h-100 p-3">
+      <h5>{{ l.food_type }}</h5>
+      <p class="mb-1">{{ l.quantity_kg }} kg · {{ l.servings }} servings</p>
+      <p class="mb-1 small text-muted">Donor: {{ l.donor_name }}<br>{{ l.address }} ({{ l.area }})<br>Phone: {{ l.contact }}<br>Best before: {{ l.expiry.replace('T', ' ') }}</p>
+      <form method="post" action="{{ url_for('claim', listing_id=l.id) }}"><button class="btn btn-success btn-sm">Claim</button></form>
+    </div>
+  </div>
+  {% else %}
+  <p class="text-muted">Nothing available right now.</p>
+  {% endfor %}
+</div>
+<h4>My claims</h4>
+<table class="table table-striped bg-white">
+  <thead><tr><th>Food</th><th>Donor</th><th>Address</th><th>Phone</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+  {% for l in mine %}
+    <tr>
+      <td>{{ l.food_type }} ({{ l.servings }})</td><td>{{ l.donor_name }}</td><td>{{ l.address }}</td><td>{{ l.contact }}</td>
+      <td>{{ l.status }}</td>
+      <td>{% if l.status == 'Claimed' %}
+        <form method="post" action="{{ url_for('pickup', listing_id=l.id) }}"><button class="btn btn-sm btn-primary">Mark picked up</button></form>
+      {% endif %}</td>
+    </tr>
+  {% else %}
+    <tr><td colspan="6" class="text-center text-muted">No claims yet.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

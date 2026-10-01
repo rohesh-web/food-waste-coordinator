@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card p-4 mb-4">
+  <h4>Post surplus food</h4>
+  <form method="post" class="row g-2">
+    <div class="col-md-4"><input name="food_type" class="form-control" placeholder="Food (e.g. Veg biryani)" required></div>
+    <div class="col-md-2"><input name="quantity_kg" type="number" step="0.1" min="0.1" class="form-control" placeholder="Qty (kg)" required></div>
+    <div class="col-md-2"><input name="servings" type="number" min="1" class="form-control" placeholder="Servings" required></div>
+    <div class="col-md-4"><input name="expiry" type="datetime-local" class="form-control" required></div>
+    <div class="col-md-5"><input name="address" class="form-control" placeholder="Pickup address" required></div>
+    <div class="col-md-3"><input name="area" class="form-control" placeholder="Area" required></div>
+    <div class="col-md-4"><input name="contact" class="form-control" placeholder="Contact phone" required></div>
+    <div class="col-12"><button class="btn btn-success">Post listing</button></div>
+  </form>
+</div>
+<h4>My listings</h4>
+<table class="table table-striped bg-white">
+  <thead><tr><th>Food</th><th>Qty</th><th>Servings</th><th>Expiry</th><th>Status</th><th>Claimed by</th></tr></thead>
+  <tbody>
+  {% for l in listings %}
+    <tr>
+      <td>{{ l.food_type }}</td><td>{{ l.quantity_kg }} kg</td><td>{{ l.servings }}</td>
+      <td>{{ l.expiry.replace('T', ' ') }}</td>
+      <td>
+        {% if l.status == 'Available' and l.expiry <= now %}<span class="badge bg-secondary">Expired</span>
+        {% elif l.status == 'Available' %}<span class="badge bg-success">Available</span>
+        {% elif l.status == 'Claimed' %}<span class="badge bg-warning text-dark">Claimed</span>
+        {% else %}<span class="badge bg-primary">Picked up</span>{% endif %}
+      </td>
+      <td>{% if l.ngo_name %}{{ l.ngo_name }} ({{ l.ngo_phone or 'no phone' }}){% else %}-{% endif %}</td>
+    </tr>
+  {% else %}
+    <tr><td colspan="6" class="text-center text-muted">No listings yet.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="text-center py-4">
+  <h1 class="display-5">Surplus food → people who need it</h1>
+  <p class="lead">Restaurants, hostels and caterers post extra food. NGOs claim it before it goes to waste.</p>
+  {% if not session.user_id %}
+    <a class="btn btn-success btn-lg" href="{{ url_for('register') }}">Get started</a>
+  {% endif %}
+</div>
+<div class="row text-center g-3 mt-2">
+  <div class="col-md-3"><div class="card p-3"><h2>{{ stats.meals }}</h2>Meals donated</div></div>
+  <div class="col-md-3"><div class="card p-3"><h2>{{ '%.1f'|format(stats.kg) }} kg</h2>Food waste prevented</div></div>
+  <div class="col-md-3"><div class="card p-3"><h2>{{ stats.n }}</h2>Completed pickups</div></div>
+  <div class="col-md-3"><div class="card p-3"><h2>{{ active }}</h2>Active listings</div></div>
+</div>
+{% endblock %}
